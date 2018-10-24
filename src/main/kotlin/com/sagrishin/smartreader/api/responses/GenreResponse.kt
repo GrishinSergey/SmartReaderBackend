@@ -1,6 +1,6 @@
 package com.sagrishin.smartreader.api.responses
 
-import com.sagrishin.smartreader.core.data.repositories.models.Genre
+import com.sagrishin.smartreader.models.repositories.models.Genre
 
 data class GenreResponse(val genres: List<String>, val status: Int) {
 

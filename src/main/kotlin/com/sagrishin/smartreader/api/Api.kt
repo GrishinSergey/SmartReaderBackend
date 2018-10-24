@@ -1,6 +1,7 @@
 package com.sagrishin.smartreader.api
 
 import com.google.gson.Gson
+import com.sagrishin.smartreader.controllers.BooksController
 import com.sagrishin.smartreader.controllers.GenresController
 import com.sagrishin.smartreader.main.SmartReaderApplication
 import io.ktor.application.call
@@ -13,6 +14,9 @@ class Api {
 
     @Inject
     lateinit var genresController: GenresController
+    @Inject
+    lateinit var booksController: BooksController
+
     @Inject
     lateinit var gson: Gson
 
@@ -29,19 +33,32 @@ class Api {
 
 
         get ("/books.getBooksByGenre/{genre}/{start}/{count}") {
-
+            val genre = call.parameters["genre"]!!
+            val start = call.parameters["start"]!!.toInt()
+            val count = call.parameters["count"]!!.toInt()
+            val books = booksController.getBooksByGenre(genre, start, count)
+            call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
         get ("/books.getBookByTitleAndAuthor/{title}/{author}") {
-
+            val genre = call.parameters["genre"]!!
+            val author = call.parameters["author"]!!
+            val books = booksController.getBookByTitleAndAuthor(genre, author)
+            call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
         get ("/books.findBooksByEntry/{entry}/{genre}") {
-
+            val genre = call.parameters["genre"]!!
+            val entry = call.parameters["entry"]!!
+            val books = booksController.findBooksByEntry(entry, genre)
+            call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
-        get ("/books.getBookVoiceOver/{title}") {
-
+        get ("/books.getBookVoiceOvers/{title}/{author}") {
+            val genre = call.parameters["genre"]!!
+            val author = call.parameters["author"]!!
+            val books = booksController.getBookVoiceOver(genre, author)
+            call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
 
