@@ -1,4 +1,4 @@
-package com.sagrishin.smartreader.core.data.repositories.db
+package com.sagrishin.smartreader.core.data.repositories
 
 import com.sagrishin.smartreader.core.data.database.dao.BooksDao
 import com.sagrishin.smartreader.core.data.database.entities.DatabaseBook
