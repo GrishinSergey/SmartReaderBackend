@@ -1,8 +1,8 @@
-package com.sagrishin.smartreader.models
+package com.sagrishin.smartreader.models.repositories
 
 import com.sagrishin.smartreader.models.repositories.models.Genre
 
-interface GenresModel {
+interface GenresRepository {
 
     fun getAllGenres(): List<Genre>
 

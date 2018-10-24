@@ -1,19 +1,17 @@
 package com.sagrishin.smartreader.core.data.database.dao.impl
 
-import com.sagrishin.smartreader.core.data.database.SmartReaderDatabaseTest
 import com.sagrishin.smartreader.core.data.database.dao.GenresDao
-import com.sagrishin.smartreader.core.data.database.entities.GenreEntity
 import com.sagrishin.smartreader.core.data.database.entities.Genres
+import com.sagrishin.smartreader.core.data.database.exceptions.NothingFoundInDatabaseException
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import java.io.File
+import utils.getTestDatabaseInstance
 
 class GenresDaoImplTest {
 
@@ -22,19 +20,15 @@ class GenresDaoImplTest {
 
     @Before
     fun setUp() {
-        val classLoader = javaClass.classLoader
-        val resource = classLoader.getResource("test_smartreader_db.sqlite")
-        val databaseFile = File(resource!!.file)
-        val db = SmartReaderDatabaseTest.getDatabaseInstance(databaseFile.absolutePath)
+        val db = getTestDatabaseInstance(javaClass.classLoader)
         genresDao = GenresDaoImpl(db)
 
         transaction (db) {
             SchemaUtils.create(Genres)
-            preparedGenres.forEach { genre ->
-                Genres.insertAndGetId {
-                    it[Genres.genre] = genre
-                }
-            }
+            preparedGenres.forEach { genre -> Genres.insert {
+                it[Genres.genre] = genre
+                it[Genres.link] = "link"
+            } }
         }
     }
 
@@ -45,12 +39,25 @@ class GenresDaoImplTest {
 
     @Test
     fun getAllGenres() {
-        val allGenres = genresDao.getAllGenres().map { it.genre }
+        val allGenres = genresDao.getAllGenres()
         (0 until preparedGenres.size).forEach {
             val preparedGenre = preparedGenres[it]
             val loadedGenre = allGenres[it]
-            Assert.assertEquals(loadedGenre, preparedGenre)
+            Assert.assertNotEquals(loadedGenre.genreId, -1)
+            Assert.assertEquals(loadedGenre.genre, preparedGenre)
         }
+    }
+
+    @Test
+    fun findGenreByName() {
+        val findGenreWithName = genresDao.findGenreByName("Genre1")
+        Assert.assertNotEquals(findGenreWithName.genreId, -1)
+        Assert.assertEquals("Genre1", findGenreWithName.genre)
+    }
+
+    @Test(expected = NothingFoundInDatabaseException::class)
+    fun findNonExistedGenre() {
+        genresDao.findGenreByName("Genre111111111")
     }
 
 }
