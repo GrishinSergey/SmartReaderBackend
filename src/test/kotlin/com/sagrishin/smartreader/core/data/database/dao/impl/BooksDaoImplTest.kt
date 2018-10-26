@@ -1,9 +1,11 @@
 package com.sagrishin.smartreader.core.data.database.dao.impl
 
+import com.sagrishin.smartreader.core.data.database.*
 import com.sagrishin.smartreader.core.data.database.dao.BooksDao
 import com.sagrishin.smartreader.core.data.database.dao.GenresDao
-import com.sagrishin.smartreader.core.data.database.entities.*
 import com.sagrishin.smartreader.core.data.database.exceptions.NothingFoundInDatabaseException
+import com.sagrishin.smartreader.core.data.models.DatabaseBook
+import com.sagrishin.smartreader.core.data.models.DatabaseGenre
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.insert
@@ -38,15 +40,17 @@ class BooksDaoImplTest {
             preparedGenres.addAll(genresDao.getAllGenres())
             val authors = CircularCollection(listOf("Author1", "Author2", "Author3"))
             val genres = CircularCollection(preparedGenres)
-            preparedBooks.addAll((0 until 10).map { DatabaseBook(
-                    title = "Book$it",
-                    author = authors.next(),
-                    pathToCover = "",
-                    pathToFile = "",
-                    rate = -1,
-                    countPages = -1,
-                    genre = genres.next()
-            ) })
+            preparedBooks.addAll((0 until 10).map {
+                DatabaseBook(
+                        title = "Book$it",
+                        author = authors.next(),
+                        pathToCover = "",
+                        pathToFile = "",
+                        rate = -1,
+                        countPages = -1,
+                        genre = genres.next()
+                )
+            })
             preparedBooks.forEach { book -> Books.insert {
                     it[Books.author] = book.author
                     it[Books.title] = book.title

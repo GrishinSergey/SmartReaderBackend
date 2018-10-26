@@ -1,6 +1,6 @@
 package com.sagrishin.smartreader.core.data.database.dao
 
-import com.sagrishin.smartreader.core.data.database.entities.DatabaseGenre
+import com.sagrishin.smartreader.core.data.models.DatabaseGenre
 
 interface GenresDao {
 
