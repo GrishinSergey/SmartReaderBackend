@@ -2,6 +2,8 @@ package com.sagrishin.smartreader.controllers
 
 interface Controller {
 
-    fun prepareResponse(response: Any): String
+    companion object {
+        const val SUCCESS_STATUS_CODE = 200
+    }
 
 }
