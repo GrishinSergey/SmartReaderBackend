@@ -1,7 +1,7 @@
 package com.sagrishin.smartreader.core.data.repositories
 
+import com.sagrishin.smartreader.core.data.models.DatabaseBook
 import com.sagrishin.smartreader.core.data.database.dao.BooksDao
-import com.sagrishin.smartreader.core.data.database.entities.DatabaseBook
 import com.sagrishin.smartreader.models.repositories.models.Book
 import com.sagrishin.smartreader.models.repositories.models.VoiceOvers
 import com.sagrishin.smartreader.models.repositories.models.Genre

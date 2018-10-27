@@ -1,7 +1,7 @@
 package com.sagrishin.smartreader.core.data.database.dao.impl
 
+import com.sagrishin.smartreader.core.data.database.Genres
 import com.sagrishin.smartreader.core.data.database.dao.GenresDao
-import com.sagrishin.smartreader.core.data.database.entities.Genres
 import com.sagrishin.smartreader.core.data.database.exceptions.NothingFoundInDatabaseException
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll

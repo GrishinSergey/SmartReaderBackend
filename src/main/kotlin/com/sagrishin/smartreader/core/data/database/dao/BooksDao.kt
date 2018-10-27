@@ -1,7 +1,7 @@
 package com.sagrishin.smartreader.core.data.database.dao
 
-import com.sagrishin.smartreader.core.data.database.entities.DatabaseBook
-import com.sagrishin.smartreader.core.data.database.entities.DatabaseVoiceOver
+import com.sagrishin.smartreader.core.data.models.DatabaseBook
+import com.sagrishin.smartreader.core.data.models.DatabaseVoiceOver
 import com.sagrishin.smartreader.core.data.database.exceptions.DuplicatedDataInDatabaseException
 import com.sagrishin.smartreader.core.data.database.exceptions.NothingFoundInDatabaseException
 

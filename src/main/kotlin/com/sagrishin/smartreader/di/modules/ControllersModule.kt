@@ -46,7 +46,16 @@ class ControllersModule {
         val dao = BooksDaoImpl(db, genresDao)
         val repo = BooksRepositoryImpl(dao)
         val model = BooksModelImpl(repo, threadExecutor)
-        return BooksControllerImpl(model, gson)
+        return BooksControllerImpl(model)
+    }
+
+    @Provides
+    @Singleton
+    fun getUsersController(@Named("OneThreadExecutor") threadExecutor: Executor): UsersController {
+        val dao = UsersDaoImpl(db)
+        val repo = UsersRepositoryImpl(dao)
+        val model = UsersModelImpl(repo, threadExecutor)
+        return UsersControllerImpl(model)
     }
 
 }

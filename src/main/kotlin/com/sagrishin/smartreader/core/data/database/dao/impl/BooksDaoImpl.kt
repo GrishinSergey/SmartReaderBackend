@@ -1,10 +1,13 @@
 package com.sagrishin.smartreader.core.data.database.dao.impl
 
+import com.sagrishin.smartreader.core.data.database.*
 import com.sagrishin.smartreader.core.data.database.dao.BooksDao
 import com.sagrishin.smartreader.core.data.database.dao.GenresDao
-import com.sagrishin.smartreader.core.data.database.entities.*
 import com.sagrishin.smartreader.core.data.database.exceptions.DuplicatedDataInDatabaseException
 import com.sagrishin.smartreader.core.data.database.exceptions.NothingFoundInDatabaseException
+import com.sagrishin.smartreader.core.data.models.DatabaseBook
+import com.sagrishin.smartreader.core.data.models.DatabaseGenre
+import com.sagrishin.smartreader.core.data.models.DatabaseVoiceOver
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction

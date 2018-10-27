@@ -1,8 +1,8 @@
-package com.sagrishin.smartreader.models.repositories
+package com.sagrishin.smartreader.models
 
 import com.sagrishin.smartreader.models.repositories.models.User
 
-interface UsersRepository {
+interface UsersModel {
 
     fun createNewUser(name: String, email: String): User
 
