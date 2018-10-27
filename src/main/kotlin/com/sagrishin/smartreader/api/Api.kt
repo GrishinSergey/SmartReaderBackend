@@ -3,6 +3,7 @@ package com.sagrishin.smartreader.api
 import com.google.gson.Gson
 import com.sagrishin.smartreader.controllers.BooksController
 import com.sagrishin.smartreader.controllers.GenresController
+import com.sagrishin.smartreader.controllers.UsersController
 import com.sagrishin.smartreader.main.SmartReaderApplication
 import io.ktor.application.call
 import io.ktor.http.ContentType
@@ -16,6 +17,8 @@ class Api {
     lateinit var genresController: GenresController
     @Inject
     lateinit var booksController: BooksController
+    @Inject
+    lateinit var usersController: UsersController
 
     @Inject
     lateinit var gson: Gson
@@ -63,11 +66,16 @@ class Api {
 
 
         post ("/users.createNewUser/{name}/{email}") {
-
+            val name = call.parameters["name"]!!
+            val email = call.parameters["email"]!!
+            val newUser = usersController.createNewUser(name, email)
+            call.respondText(gson.toJson(newUser), ContentType.Application.Json)
         }
 
         get ("/users.getUserInfoByEmail/{email}") {
-
+            val email = call.parameters["email"]!!
+            val foundUser = usersController.getUserInfoByEmail(email)
+            call.respondText(gson.toJson(foundUser), ContentType.Application.Json)
         }
 
 

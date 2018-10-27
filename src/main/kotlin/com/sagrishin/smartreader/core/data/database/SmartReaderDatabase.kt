@@ -1,6 +1,5 @@
 package com.sagrishin.smartreader.core.data.database
 
-import com.sagrishin.smartreader.core.data.database.entities.Genres
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -24,7 +23,7 @@ object SmartReaderDatabase {
         )
 
         transaction (connect) {
-            SchemaUtils.create(Genres)
+            SchemaUtils.create(Genres, Books, VoiceOvers, Libraries, Users, UserLibrary, BookLibrary)
         }
 
         return connect

@@ -20,7 +20,8 @@ data class DatabaseVoiceOver(val pathToVoiceOverFile: String = "")
 
 data class DatabaseUser(val userId: Int = -1,
                         val userName: String = "",
-                        val userEmail: String = "")
+                        val userEmail: String = "",
+                        val libraries: List<DatabaseLibrary> = emptyList())
 
 
 data class DatabaseLibrary(val libraryId: Int = -1,

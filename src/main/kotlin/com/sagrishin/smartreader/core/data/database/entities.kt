@@ -40,8 +40,8 @@ class UserEntity(id: EntityID<Int>) : IntEntity(id) {
 
     companion object : IntEntityClass<UserEntity>(Users)
 
-    val userName by Users.userName
-    val userEmail by Users.userEmail
+    var userName by Users.userName
+    var userEmail by Users.userEmail
 
 }
 
@@ -49,6 +49,18 @@ class LibraryEntity(id: EntityID<Int>) : IntEntity(id) {
 
     companion object : IntEntityClass<LibraryEntity>(Libraries)
 
-    val libraryName by Libraries.libraryName
+    var libraryName by Libraries.libraryName
+
+}
+
+class UserLibraryEntity(id: EntityID<Int>) : IntEntity(id) {
+
+    companion object : IntEntityClass<UserLibraryEntity>(UserLibrary)
+
+}
+
+class BookLibraryEntity(id: EntityID<Int>) : IntEntity(id) {
+
+    companion object : IntEntityClass<BookLibraryEntity>(BookLibrary)
 
 }
