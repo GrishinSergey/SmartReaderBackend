@@ -5,8 +5,9 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.pool.KryoFactory;
 import com.esotericsoftware.kryo.pool.KryoPool;
-import com.sagrishin.smartreader.core.data.cache.redis.KryoClassRegistrator;
+import com.sagrishin.smartreader.core.data.cache.redis.KryoClassRecorder;
 import com.sagrishin.smartreader.core.data.cache.redis.KryoContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 
@@ -16,22 +17,24 @@ public class KryoContextImpl implements KryoContext {
 
     private KryoPool pool;
 
-    public static KryoContext newKryoContextFactory(KryoClassRegistrator registrator) {
+    public static KryoContext newKryoContextFactory(KryoClassRecorder registrator) {
         return new KryoContextImpl(registrator);
     }
 
-    private KryoContextImpl(KryoClassRegistrator registrator) {
+    private KryoContextImpl(KryoClassRecorder registrator) {
         KryoFactory factory = new KryoFactoryImpl(registrator);
         pool = new KryoPool.Builder(factory).softReferences().build();
     }
 
+    @NotNull
     @Override
-    public byte[] serialize(Object obj) {
+    public byte[] serialize(@NotNull Object obj) {
         return serialize(obj, DEFAULT_BUFFER);
     }
 
+    @NotNull
     @Override
-    public byte[] serialize(Object obj, int bufferSize) {
+    public byte[] serialize(@NotNull Object obj, int bufferSize) {
         Output output = new Output(new ByteArrayOutputStream(), bufferSize);
         Kryo kryo = pool.borrow();
         kryo.writeObject(output, obj);
@@ -41,28 +44,28 @@ public class KryoContextImpl implements KryoContext {
     }
 
     @Override
-    public <T> T deserialize(T type, byte[] serialized) throws ClassNotFoundException {
-        Object obj;
+    public <T> T deserialize(T type, @NotNull byte[] serialized) {
+        T obj;
         Kryo kryo = pool.borrow();
         Input input = new Input(serialized);
-        obj = kryo.readObject(input, Class.forName(type.getClass().getName()));
+        obj = (T) kryo.readObject(input, type.getClass());
         pool.release(kryo);
-        return (T) obj;
+        return obj;
     }
 
 
     private static class KryoFactoryImpl implements KryoFactory {
 
-        private KryoClassRegistrator registrator;
+        private KryoClassRecorder recorder;
 
-        KryoFactoryImpl(KryoClassRegistrator registrator) {
-            this.registrator = registrator;
+        KryoFactoryImpl(KryoClassRecorder recorder) {
+            this.recorder = recorder;
         }
 
         @Override
         public Kryo create() {
             Kryo kryo = new Kryo();
-            registrator.register(kryo);
+            recorder.register(kryo);
             return kryo;
         }
 
