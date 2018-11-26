@@ -22,8 +22,7 @@ class GenresRepositoryImplTest {
         )
 
         val mockedDao = mockk<GenresDaoImpl>()
-        every { mockedDao.getAllGenres() } returns genres andThenThrows Exception("")
-
+        every { mockedDao.getAllGenres() } returns genres
         val genresRepository = GenresRepositoryImpl(mockedDao)
 
         val allGenres = genresRepository.getAllGenres()
@@ -31,15 +30,6 @@ class GenresRepositoryImplTest {
         (0 until genres.size).forEach {
             val preparedGenre = genres[it]
             val selectedGenre = allGenres[it]
-
-            Assert.assertEquals(preparedGenre.genre, selectedGenre.genre)
-        }
-
-        val cachedGenres = genresRepository.getAllGenres()
-
-        (0 until genres.size).forEach {
-            val preparedGenre = genres[it]
-            val selectedGenre = cachedGenres[it]
 
             Assert.assertEquals(preparedGenre.genre, selectedGenre.genre)
         }
