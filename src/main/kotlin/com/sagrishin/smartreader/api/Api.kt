@@ -10,22 +10,30 @@ import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.response.respondText
 import io.ktor.routing.*
+import java.net.URLDecoder
 import javax.inject.Inject
 
 class Api {
 
-    @Inject
-    lateinit var genresController: GenresController
-    @Inject
-    lateinit var booksController: BooksController
-    @Inject
-    lateinit var usersController: UsersController
+    private val genresController: GenresController
+    private val booksController: BooksController
+    private val usersController: UsersController
+    private val librariesController: LibrariesController
+
+    private val gson: Gson
 
     @Inject
-    lateinit var gson: Gson
-
-    init {
-        SmartReaderApplication.appComponent.inject(this)
+    constructor(genresController: GenresController,
+                booksController: BooksController,
+                usersController: UsersController,
+                librariesController: LibrariesController,
+                gson: Gson
+    ) {
+        this.genresController = genresController
+        this.booksController = booksController
+        this.usersController = usersController
+        this.librariesController = librariesController
+        this.gson = gson
     }
 
     fun api(): Routing.() -> Unit = {
@@ -37,7 +45,7 @@ class Api {
 
 
         get ("/books.getBooksByGenre/{genre}/{start}/{count}") {
-            val genre = call.parameters["genre"]!!
+            val genre = URLDecoder.decode(call.parameters["genre"]!!, "UTF-8")
             val start = call.parameters["start"]!!.toInt()
             val count = call.parameters["count"]!!.toInt()
             val books = booksController.getBooksByGenre(genre, start, count)
@@ -45,23 +53,23 @@ class Api {
         }
 
         get ("/books.getBookByTitleAndAuthor/{title}/{author}") {
-            val genre = call.parameters["genre"]!!
+            val title = call.parameters["title"]!!
             val author = call.parameters["author"]!!
-            val books = booksController.getBookByTitleAndAuthor(genre, author)
+            val books = booksController.getBookByTitleAndAuthor(title, author)
             call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
         get ("/books.findBooksByEntry/{entry}/{genre}") {
-            val genre = call.parameters["genre"]!!
             val entry = call.parameters["entry"]!!
+            val genre = call.parameters["genre"]!!
             val books = booksController.findBooksByEntry(entry, genre)
             call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
         get ("/books.getBookVoiceOvers/{title}/{author}") {
-            val genre = call.parameters["genre"]!!
+            val title = call.parameters["title"]!!
             val author = call.parameters["author"]!!
-            val books = booksController.getBookVoiceOver(genre, author)
+            val books = booksController.getBookVoiceOver(title, author)
             call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
