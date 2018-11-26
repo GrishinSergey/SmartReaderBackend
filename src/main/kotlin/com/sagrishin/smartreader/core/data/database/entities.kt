@@ -57,10 +57,17 @@ class UserLibraryEntity(id: EntityID<Int>) : IntEntity(id) {
 
     companion object : IntEntityClass<UserLibraryEntity>(UserLibrary)
 
+    var user by UserLibrary.user
+    var library by UserLibrary.library
+
 }
 
 class BookLibraryEntity(id: EntityID<Int>) : IntEntity(id) {
 
     companion object : IntEntityClass<BookLibraryEntity>(BookLibrary)
+
+    var library by BookLibrary.library
+    var book by BookLibrary.book
+    var progress by BookLibrary.progress
 
 }
