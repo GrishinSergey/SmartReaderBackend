@@ -17,17 +17,14 @@ class UsersDaoImpl : UsersDao {
         this.db = db
     }
 
-    @Throws(DuplicatedDataInDatabaseException::class)
     override fun createNewUser(name: String, email: String): DatabaseUser {
         return transaction (db) { createNewUserWithNameAndEmail(email, name) }
     }
 
-    @Throws(NothingFoundInDatabaseException::class)
     override fun getUserInfoByEmail(email: String): DatabaseUser {
         return transaction (db) { findUserByEmail(email) }
     }
 
-    @Throws(DuplicatedDataInDatabaseException::class)
     private fun createNewUserWithNameAndEmail(email: String, name: String): DatabaseUser {
         return try {
             findUserByEmail(email)
@@ -43,7 +40,6 @@ class UsersDaoImpl : UsersDao {
         }
     }
 
-    @Throws(NothingFoundInDatabaseException::class)
     private fun findUserByEmail(email: String): DatabaseUser {
         return try {
             UserEntity.find { Users.userEmail eq email }.single().let {
