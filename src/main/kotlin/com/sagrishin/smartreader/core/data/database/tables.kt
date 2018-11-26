@@ -1,6 +1,7 @@
 package com.sagrishin.smartreader.core.data.database
 
 import org.jetbrains.exposed.dao.IntIdTable
+import org.jetbrains.exposed.sql.ReferenceOption
 
 object Genres : IntIdTable("genres") {
 
@@ -19,14 +20,14 @@ object Books : IntIdTable("books") {
     val pathToFile = varchar("path_to_file", 255).uniqueIndex()
     val rate = integer("rate")
     val countPages = integer("count_pages")
-    val genre = integer("genre") references Genres.genreId
+    val genre = integer("genre").references(Genres.genreId, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
 
 }
 
 object VoiceOvers : IntIdTable("voice_overs") {
 
     val pathToVoiceOverFile = varchar("path_to_voice_over_file", 255)
-    val book = integer("book") references Books.bookId
+    val book = integer("book").references(Books.bookId, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
 
 }
 
@@ -45,18 +46,19 @@ object Users : IntIdTable("users") {
 
 }
 
-object UserLibrary : IntIdTable("user_library") {
+object UserLibrary : IntIdTable("users_libraries") {
 
-    internal val userLibraryPairId = integer("id")
-    val library = integer("library_id") references Libraries.libraryId
-    val user = integer("user_id") references Users.userId
+    val library = integer("library")
+            .references(Libraries.libraryId, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
+    val user = integer("user").references(Users.userId, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
 
 }
 
-object BookLibrary : IntIdTable("book_library") {
+object BookLibrary : IntIdTable("books_libraries") {
 
-    internal val bookLibraryPairId = integer("id")
-    val library = integer("library_id") references Libraries.libraryId
-    val book = integer("book_id") references Books.bookId
+    val library = integer("library")
+            .references(Libraries.libraryId, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
+    val book = integer("book").references(Books.bookId, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
+    val progress = integer("progress")
 
 }

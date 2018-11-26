@@ -3,28 +3,37 @@ package com.sagrishin.smartreader.api
 import com.google.gson.Gson
 import com.sagrishin.smartreader.controllers.BooksController
 import com.sagrishin.smartreader.controllers.GenresController
+import com.sagrishin.smartreader.controllers.LibrariesController
 import com.sagrishin.smartreader.controllers.UsersController
 import com.sagrishin.smartreader.main.SmartReaderApplication
 import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.response.respondText
 import io.ktor.routing.*
+import java.net.URLDecoder
 import javax.inject.Inject
 
 class Api {
 
-    @Inject
-    lateinit var genresController: GenresController
-    @Inject
-    lateinit var booksController: BooksController
-    @Inject
-    lateinit var usersController: UsersController
+    private val genresController: GenresController
+    private val booksController: BooksController
+    private val usersController: UsersController
+    private val librariesController: LibrariesController
+
+    private val gson: Gson
 
     @Inject
-    lateinit var gson: Gson
-
-    init {
-        SmartReaderApplication.appComponent.inject(this)
+    constructor(genresController: GenresController,
+                booksController: BooksController,
+                usersController: UsersController,
+                librariesController: LibrariesController,
+                gson: Gson
+    ) {
+        this.genresController = genresController
+        this.booksController = booksController
+        this.usersController = usersController
+        this.librariesController = librariesController
+        this.gson = gson
     }
 
     fun api(): Routing.() -> Unit = {
@@ -36,7 +45,7 @@ class Api {
 
 
         get ("/books.getBooksByGenre/{genre}/{start}/{count}") {
-            val genre = call.parameters["genre"]!!
+            val genre = URLDecoder.decode(call.parameters["genre"]!!, "UTF-8")
             val start = call.parameters["start"]!!.toInt()
             val count = call.parameters["count"]!!.toInt()
             val books = booksController.getBooksByGenre(genre, start, count)
@@ -44,23 +53,23 @@ class Api {
         }
 
         get ("/books.getBookByTitleAndAuthor/{title}/{author}") {
-            val genre = call.parameters["genre"]!!
+            val title = call.parameters["title"]!!
             val author = call.parameters["author"]!!
-            val books = booksController.getBookByTitleAndAuthor(genre, author)
+            val books = booksController.getBookByTitleAndAuthor(title, author)
             call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
         get ("/books.findBooksByEntry/{entry}/{genre}") {
-            val genre = call.parameters["genre"]!!
             val entry = call.parameters["entry"]!!
+            val genre = call.parameters["genre"]!!
             val books = booksController.findBooksByEntry(entry, genre)
             call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
         get ("/books.getBookVoiceOvers/{title}/{author}") {
-            val genre = call.parameters["genre"]!!
+            val title = call.parameters["title"]!!
             val author = call.parameters["author"]!!
-            val books = booksController.getBookVoiceOver(genre, author)
+            val books = booksController.getBookVoiceOver(title, author)
             call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
@@ -80,31 +89,60 @@ class Api {
 
 
         get ("/libraries.getUserLibraries/{email}/{start}/{count}") {
-
+            val email = call.parameters["email"]!!
+            val start = call.parameters["start"]!!.toInt()
+            val count = call.parameters["count"]!!.toInt()
+            val userLibraries = librariesController.getUserLibraries(email, start, count)
+            call.respondText(gson.toJson(userLibraries), ContentType.Application.Json)
         }
 
         get ("/libraries.getBooksFromUserLibrary/{email}/{library}/{start}/{count}") {
-
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val start = call.parameters["start"]!!.toInt()
+            val count = call.parameters["count"]!!.toInt()
+            val books = librariesController.getBooksFromUserLibrary(email, library, start, count)
+            call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
-        get ("/libraries.createNewUserLibrary/{email}/{library}") {
-
+        post ("/libraries.createNewUserLibrary/{email}/{library}") {
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val newLibrary = librariesController.createNewUserLibrary(email, library)
+            call.respondText(gson.toJson(newLibrary), ContentType.Application.Json)
         }
 
         post ("/libraries.addNewBookToUserLibrary/{title}/{email}/{library}") {
-
+            val title = call.parameters["title"]!!
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val newBook = librariesController.addNewBookToUserLibrary(title, email, library)
+            call.respondText(gson.toJson(newBook), ContentType.Application.Json)
         }
 
         patch ("/libraries.updateBookReadingProgress/{title}/{email}/{library}/{progress}") {
-
+            val title = call.parameters["title"]!!
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val progress = call.parameters["progress"]!!.toInt()
+            val progressResult = librariesController.updateBookReadingProgress(title, email, library, progress)
+            call.respondText(gson.toJson(progressResult), ContentType.Application.Json)
         }
 
         delete ("/libraries.deleteBookFromLibrary/{title}/{email}/{library}") {
+            val title = call.parameters["title"]!!
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val deletingResult = librariesController.deleteBookFromLibrary(title, email, library)
+            call.respondText(gson.toJson(deletingResult), ContentType.Application.Json)
 
         }
 
         delete ("/libraries.deleteUserLibrary/{email}/{library}") {
-
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val deletingResult = librariesController.deleteUserLibrary(email, library)
+            call.respondText(gson.toJson(deletingResult), ContentType.Application.Json)
         }
 
     }

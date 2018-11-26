@@ -1,21 +1,21 @@
 package com.sagrishin.smartreader.controllers.impl
 
-import com.google.gson.Gson
 import com.sagrishin.smartreader.api.responses.GenreResponse
+import com.sagrishin.smartreader.controllers.Controller
+import com.sagrishin.smartreader.controllers.Controller.Companion.SUCCESS_STATUS_CODE
 import com.sagrishin.smartreader.controllers.GenresController
-import com.sagrishin.smartreader.controllers.base.BaseController
 import com.sagrishin.smartreader.models.impl.GenresModelImpl
 
-class GenresControllerImpl : BaseController, GenresController {
+class GenresControllerImpl : GenresController {
 
     private val genresModel: GenresModelImpl
 
-    constructor(genresModel: GenresModelImpl, gson: Gson) : super(gson) {
+    constructor(genresModel: GenresModelImpl) {
         this.genresModel = genresModel
     }
 
     override fun getAllGenres(): GenreResponse {
-        return GenreResponse.convert(genresModel.getAllGenres(), SUCCESS_STATUS_CODE)
+        return GenreResponse.convert(genresModel.getAllGenres(), Controller.SUCCESS_STATUS_CODE)
     }
 
 }

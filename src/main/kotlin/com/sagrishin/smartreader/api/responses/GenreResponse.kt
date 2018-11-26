@@ -2,7 +2,10 @@ package com.sagrishin.smartreader.api.responses
 
 import com.sagrishin.smartreader.models.repositories.models.Genre
 
-data class GenreResponse(val genres: List<String>, val status: Int) {
+data class GenreResponse(
+        val genres: List<String>,
+        val status: Int
+) {
 
     companion object Builder {
 
