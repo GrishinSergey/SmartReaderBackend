@@ -8,7 +8,7 @@ import com.sagrishin.smartreader.models.repositories.models.Library
 interface LibrariesModel {
 
     @Throws(LibraryModelException::class)
-    fun getUserLibraries(email: String, start: String, count: Int): List<Library>
+    fun getUserLibraries(email: String, start: Int, count: Int): List<Library>
 
     @Throws(LibraryModelException::class)
     fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): List<Book>

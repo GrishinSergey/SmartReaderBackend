@@ -3,6 +3,7 @@ package com.sagrishin.smartreader.api
 import com.google.gson.Gson
 import com.sagrishin.smartreader.controllers.BooksController
 import com.sagrishin.smartreader.controllers.GenresController
+import com.sagrishin.smartreader.controllers.LibrariesController
 import com.sagrishin.smartreader.controllers.UsersController
 import com.sagrishin.smartreader.main.SmartReaderApplication
 import io.ktor.application.call
@@ -80,31 +81,60 @@ class Api {
 
 
         get ("/libraries.getUserLibraries/{email}/{start}/{count}") {
-
+            val email = call.parameters["email"]!!
+            val start = call.parameters["start"]!!.toInt()
+            val count = call.parameters["count"]!!.toInt()
+            val userLibraries = librariesController.getUserLibraries(email, start, count)
+            call.respondText(gson.toJson(userLibraries), ContentType.Application.Json)
         }
 
         get ("/libraries.getBooksFromUserLibrary/{email}/{library}/{start}/{count}") {
-
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val start = call.parameters["start"]!!.toInt()
+            val count = call.parameters["count"]!!.toInt()
+            val books = librariesController.getBooksFromUserLibrary(email, library, start, count)
+            call.respondText(gson.toJson(books), ContentType.Application.Json)
         }
 
-        get ("/libraries.createNewUserLibrary/{email}/{library}") {
-
+        post ("/libraries.createNewUserLibrary/{email}/{library}") {
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val newLibrary = librariesController.createNewUserLibrary(email, library)
+            call.respondText(gson.toJson(newLibrary), ContentType.Application.Json)
         }
 
         post ("/libraries.addNewBookToUserLibrary/{title}/{email}/{library}") {
-
+            val title = call.parameters["title"]!!
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val newBook = librariesController.addNewBookToUserLibrary(title, email, library)
+            call.respondText(gson.toJson(newBook), ContentType.Application.Json)
         }
 
         patch ("/libraries.updateBookReadingProgress/{title}/{email}/{library}/{progress}") {
-
+            val title = call.parameters["title"]!!
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val progress = call.parameters["progress"]!!.toInt()
+            val progressResult = librariesController.updateBookReadingProgress(title, email, library, progress)
+            call.respondText(gson.toJson(progressResult), ContentType.Application.Json)
         }
 
         delete ("/libraries.deleteBookFromLibrary/{title}/{email}/{library}") {
+            val title = call.parameters["title"]!!
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val deletingResult = librariesController.deleteBookFromLibrary(title, email, library)
+            call.respondText(gson.toJson(deletingResult), ContentType.Application.Json)
 
         }
 
         delete ("/libraries.deleteUserLibrary/{email}/{library}") {
-
+            val email = call.parameters["email"]!!
+            val library = call.parameters["library"]!!
+            val deletingResult = librariesController.deleteUserLibrary(email, library)
+            call.respondText(gson.toJson(deletingResult), ContentType.Application.Json)
         }
 
     }
