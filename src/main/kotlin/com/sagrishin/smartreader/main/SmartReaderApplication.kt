@@ -1,11 +1,8 @@
 package com.sagrishin.smartreader.main
 
-import com.sagrishin.smartreader.api.Api
 import com.sagrishin.smartreader.di.components.AppComponent
 import com.sagrishin.smartreader.di.components.DaggerAppComponent
-import com.sagrishin.smartreader.di.modules.ControllersModule
-import com.sagrishin.smartreader.di.modules.GsonModule
-import com.sagrishin.smartreader.di.modules.ThreadsModule
+import com.sagrishin.smartreader.di.modules.*
 
 import io.ktor.application.install
 import io.ktor.features.CallLogging
@@ -17,19 +14,24 @@ import io.ktor.server.netty.Netty
 
 object SmartReaderApplication {
 
-    val appComponent: AppComponent = DaggerAppComponent.builder()
+    private val appComponent: AppComponent = DaggerAppComponent.builder()
             .controllersModule(ControllersModule())
             .gsonModule(GsonModule())
+            .daoModule(DaoModule())
             .threadsModule(ThreadsModule())
+            .apiModule(ApiModule())
             .build()
 
     @JvmStatic
     fun main(args: Array<String>) {
+        val api = appComponent.getApi()
+
         embeddedServer(Netty, 8080) {
             install(DefaultHeaders)
             install(ConditionalHeaders)
             install(CallLogging)
-            routing(Api().api())
+
+            routing(api.api())
         }.start(true)
     }
 
