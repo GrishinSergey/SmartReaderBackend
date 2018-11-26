@@ -22,7 +22,6 @@ class Api {
 
     private val gson: Gson
 
-    @Inject
     constructor(genresController: GenresController,
                 booksController: BooksController,
                 usersController: UsersController,
