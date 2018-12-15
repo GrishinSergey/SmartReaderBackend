@@ -5,13 +5,13 @@ import com.sagrishin.smartreader.controllers.BooksController
 import com.sagrishin.smartreader.controllers.GenresController
 import com.sagrishin.smartreader.controllers.LibrariesController
 import com.sagrishin.smartreader.controllers.UsersController
-import com.sagrishin.smartreader.main.SmartReaderApplication
 import io.ktor.application.call
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.*
 import java.net.URLDecoder
-import javax.inject.Inject
 
 class Api {
 
@@ -38,6 +38,9 @@ class Api {
     fun api(): Routing.() -> Unit = {
 
         get ("/genres.getAllGenres") {
+//            val auth = call.request.headers["Authorization"]
+//            call.respond(HttpStatusCode.PaymentRequired, )
+
             val allGenres = genresController.getAllGenres()
             call.respondText(gson.toJson(allGenres), ContentType.Application.Json)
         }
