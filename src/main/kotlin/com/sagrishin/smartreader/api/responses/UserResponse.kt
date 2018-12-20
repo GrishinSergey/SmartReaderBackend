@@ -6,3 +6,8 @@ data class UserResponse(
         val user: User,
         val status: Int
 )
+
+data class AuthResponse(
+        val token: String,
+        val status: Int
+)

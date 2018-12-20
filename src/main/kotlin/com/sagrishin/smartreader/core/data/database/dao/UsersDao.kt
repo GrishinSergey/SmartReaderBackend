@@ -8,4 +8,6 @@ interface UsersDao {
 
     fun getUserInfoByEmail(email: String): DatabaseUser
 
+    fun getUserById(id: Int): DatabaseUser?
+
 }
