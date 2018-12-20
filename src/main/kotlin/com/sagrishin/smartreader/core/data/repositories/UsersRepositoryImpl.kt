@@ -14,12 +14,12 @@ class UsersRepositoryImpl : UsersRepository {
 
     override fun createNewUser(name: String, email: String): User {
         val newUser = dao.createNewUser(name, email)
-        return User(newUser.userEmail, newUser.userName, emptyList())
+        return User(newUser.userId.toLong(), newUser.userEmail, newUser.userName, emptyList())
     }
 
     override fun getUserInfoByEmail(email: String): User {
         val foundUser = dao.getUserInfoByEmail(email)
-        return User(foundUser.userEmail, foundUser.userName, emptyList())
+        return User(foundUser.userId.toLong(), foundUser.userEmail, foundUser.userName, emptyList())
     }
 
 }

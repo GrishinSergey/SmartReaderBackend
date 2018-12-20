@@ -25,6 +25,12 @@ class UsersDaoImpl : UsersDao {
         return transaction (db) { findUserByEmail(email) }
     }
 
+    override fun getUserById(id: Int): DatabaseUser? {
+        return transaction (db) {
+            UserEntity.findById(id)?.let { DatabaseUser(it.id.value, it.userName, it.userEmail) }
+        }
+    }
+
     private fun createNewUserWithNameAndEmail(email: String, name: String): DatabaseUser {
         return try {
             findUserByEmail(email)
