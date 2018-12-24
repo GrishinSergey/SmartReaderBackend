@@ -15,37 +15,32 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
-object SmartReaderApplication {
+private val appComponent: AppComponent = DaggerAppComponent.builder()
+        .controllersModule(ControllersModule())
+        .gsonModule(GsonModule())
+        .daoModule(DaoModule())
+        .threadsModule(ThreadsModule())
+        .apiModule(ApiModule())
+        .build()
 
-    private val appComponent: AppComponent = DaggerAppComponent.builder()
-            .controllersModule(ControllersModule())
-            .gsonModule(GsonModule())
-            .daoModule(DaoModule())
-            .threadsModule(ThreadsModule())
-            .apiModule(ApiModule())
-            .build()
+fun main(args: Array<String>) {
+    val usersRepository = appComponent.getUsersRepository()
+    val api = appComponent.getApi()
 
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val usersRepository = appComponent.getUsersRepository()
-        val api = appComponent.getApi()
+    embeddedServer(Netty, 8080) {
+        install(DefaultHeaders)
+        install(ConditionalHeaders)
+        install(CallLogging)
+        installCors()
 
-        embeddedServer(Netty, 8080) {
-            install(DefaultHeaders)
-            install(ConditionalHeaders)
-            install(CallLogging)
-            installCors()
-
-            install(Authentication) {
-                jwt("jwt") {
-                    verifier(JwtConfig.verifier)
-                    realm = "ktor.io"
-                    validate { it.payload.getClaim("id").asInt()?.let(usersRepository::getUserInfoForTokenAuth) }
-                }
+        install(Authentication) {
+            jwt("jwt") {
+                verifier(JwtConfig.verifier)
+                realm = "ktor.io"
+                validate { it.payload.getClaim("id").asInt()?.let(usersRepository::getUserInfoForTokenAuth) }
             }
+        }
 
-            routing(api.api())
-        }.start(true)
-    }
-
+        routing(api.api())
+    }.start(true)
 }
