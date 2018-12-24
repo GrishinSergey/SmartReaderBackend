@@ -9,15 +9,16 @@ import com.sagrishin.smartreader.core.data.models.DatabaseBook
 import com.sagrishin.smartreader.core.data.models.DatabaseGenre
 import com.sagrishin.smartreader.core.data.models.DatabaseLibrary
 import com.sagrishin.smartreader.core.data.models.DatabaseUser
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.deleteAll
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import sun.awt.AWTIcon64_security_icon_yellow32_png
 import utils.CircularCollection
-import utils.getTestDatabaseInstance
 
 class LibrariesDaoImplTest {
 
@@ -171,7 +172,7 @@ class LibrariesDaoImplTest {
                 UserLibrary.user eq usersDao.getUserInfoByEmail(preparedUser.userEmail).userId
             }.limit(10, 0).toList().map {
                 val library = Libraries.select { Libraries.libraryId eq it.library }.single()
-                DatabaseLibrary(library[Libraries.id].value, library[Libraries.libraryName], emptyList())
+                DatabaseLibrary(library[Libraries.id].value, library[Libraries.libraryName], -1, "", emptyList())
             }
         }
 

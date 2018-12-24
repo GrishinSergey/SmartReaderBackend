@@ -22,4 +22,8 @@ class UsersRepositoryImpl : UsersRepository {
         return User(foundUser.userId.toLong(), foundUser.userEmail, foundUser.userName, emptyList())
     }
 
+    override fun getUserInfoForTokenAuth(id: Int): JwtUserPrincipal? {
+        return dao.getUserById(id)?.let { JwtUserPrincipal(it.userId.toLong(), it.userEmail, it.userName) }
+    }
+
 }

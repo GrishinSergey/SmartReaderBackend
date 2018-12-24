@@ -37,7 +37,7 @@ data class DatabaseUser(
         val userName: String = "",
         val userEmail: String = "",
         val libraries: List<DatabaseLibrary> = emptyList()
-) : Principal
+)
 
 
 data class DatabaseLibrary(

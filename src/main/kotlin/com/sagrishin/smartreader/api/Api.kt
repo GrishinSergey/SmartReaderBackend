@@ -41,12 +41,12 @@ class Api(
         post ("/users.authoriseUser/{email}") {
             val email = call.parameters["email"]!!
             val authResult = usersController.getUserInfoByEmail(email)
-            val token = JwtConfig.makeToken(DatabaseUser(
-                    authResult.user.id.toInt(),
-                    authResult.user.userName,
-                    authResult.user.userEmail
+            val token = JwtConfig.makeToken(JwtUserPrincipal(
+                    authResult.user.id,
+                    authResult.user.userEmail,
+                    authResult.user.userName
             ))
-            call.respondText(token, ContentType.Application.Json)
+            call.respondText(gson.toJson(AuthResponse(token, authResult.status)), ContentType.Application.Json)
         }
 
         authenticate ("jwt") {

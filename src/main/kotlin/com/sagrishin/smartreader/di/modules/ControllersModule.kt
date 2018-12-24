@@ -21,6 +21,10 @@ import com.sagrishin.smartreader.models.impl.BooksModelImpl
 import com.sagrishin.smartreader.models.impl.GenresModelImpl
 import com.sagrishin.smartreader.models.impl.LibrariesModelImpl
 import com.sagrishin.smartreader.models.impl.UsersModelImpl
+import com.sagrishin.smartreader.models.repositories.BooksRepository
+import com.sagrishin.smartreader.models.repositories.GenresRepository
+import com.sagrishin.smartreader.models.repositories.LibrariesRepository
+import com.sagrishin.smartreader.models.repositories.UsersRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -33,8 +37,7 @@ class ControllersModule {
     @Provides
     @Singleton
     fun getGenresController(@Named("OneThreadExecutor") threadExecutor: Executor,
-                            genresDao: GenresDao): GenresController {
-        val repo = GenresRepositoryImpl(genresDao)
+                            repo: GenresRepository): GenresController {
         val model = GenresModelImpl(repo, threadExecutor)
         return GenresControllerImpl(model)
     }
@@ -42,8 +45,7 @@ class ControllersModule {
     @Provides
     @Singleton
     fun getBooksController(@Named("OneThreadExecutor") threadExecutor: Executor,
-                           booksDao: BooksDao): BooksController {
-        val repo = BooksRepositoryImpl(booksDao)
+                           repo: BooksRepository): BooksController {
         val model = BooksModelImpl(repo, threadExecutor)
         return BooksControllerImpl(model)
     }
@@ -51,8 +53,7 @@ class ControllersModule {
     @Provides
     @Singleton
     fun getUsersController(@Named("OneThreadExecutor") threadExecutor: Executor,
-                           usersDao: UsersDao): UsersController {
-        val repo = UsersRepositoryImpl(usersDao)
+                           repo: UsersRepository): UsersController {
         val model = UsersModelImpl(repo, threadExecutor)
         return UsersControllerImpl(model)
     }
@@ -60,8 +61,7 @@ class ControllersModule {
     @Provides
     @Singleton
     fun getLibrariesController(@Named("OneThreadExecutor") threadExecutor: Executor,
-                               librariesDao: LibrariesDao): LibrariesController {
-        val repo = LibrariesRepositoryImpl(librariesDao)
+                               repo: LibrariesRepository): LibrariesController {
         val model = LibrariesModelImpl(repo, threadExecutor)
         return LibrariesControllerImpl(model)
     }
