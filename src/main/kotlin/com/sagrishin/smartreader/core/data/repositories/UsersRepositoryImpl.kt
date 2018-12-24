@@ -1,13 +1,18 @@
 package com.sagrishin.smartreader.core.data.repositories
 
+import com.sagrishin.smartreader.api.jwt.JwtUserPrincipal
 import com.sagrishin.smartreader.core.data.database.dao.UsersDao
 import com.sagrishin.smartreader.models.repositories.UsersRepository
 import com.sagrishin.smartreader.models.repositories.models.User
+import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UsersRepositoryImpl : UsersRepository {
 
     private val dao: UsersDao
 
+    @Inject
     constructor(usersDao: UsersDao) {
         dao = usersDao
     }
@@ -20,6 +25,10 @@ class UsersRepositoryImpl : UsersRepository {
     override fun getUserInfoByEmail(email: String): User {
         val foundUser = dao.getUserInfoByEmail(email)
         return User(foundUser.userId.toLong(), foundUser.userEmail, foundUser.userName, emptyList())
+    }
+
+    override fun getUserInfoForTokenAuth(id: Int): JwtUserPrincipal? {
+        return dao.getUserById(id)?.let { JwtUserPrincipal(it.userId.toLong(), it.userEmail, it.userName) }
     }
 
 }

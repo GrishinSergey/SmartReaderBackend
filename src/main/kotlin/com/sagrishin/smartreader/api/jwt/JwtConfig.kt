@@ -23,11 +23,11 @@ object JwtConfig {
     /**
      * Produce a token for this combination of User and Account
      */
-    fun makeToken(user: DatabaseUser): String = JWT.create()
+    fun makeToken(user: JwtUserPrincipal): String = JWT.create()
             .withSubject("Authentication")
             .withIssuer(issuer)
             .withClaim("userEmail", user.userEmail)
-            .withClaim("id", user.userId)
+            .withClaim("id", user.id)
             .withExpiresAt(getExpiration())
             .sign(algorithm)
 

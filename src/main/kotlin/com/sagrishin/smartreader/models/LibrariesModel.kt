@@ -11,7 +11,7 @@ interface LibrariesModel {
     fun getUserLibraries(email: String, start: Int, count: Int): List<Library>
 
     @Throws(LibraryModelException::class)
-    fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): List<Book>
+    fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): Library
 
     @Throws(LibraryModelException::class)
     fun createNewUserLibrary(email: String, library: String): Library

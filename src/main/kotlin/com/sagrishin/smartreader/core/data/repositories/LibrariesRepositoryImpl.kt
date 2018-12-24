@@ -2,32 +2,42 @@ package com.sagrishin.smartreader.core.data.repositories
 
 import com.sagrishin.smartreader.core.data.database.dao.LibrariesDao
 import com.sagrishin.smartreader.core.data.database.dao.bookDatabaseToEntityConverter
+import com.sagrishin.smartreader.core.data.models.DatabaseBookInLibrary
 import com.sagrishin.smartreader.models.repositories.LibrariesRepository
 import com.sagrishin.smartreader.models.repositories.models.Book
 import com.sagrishin.smartreader.models.repositories.models.Genre
 import com.sagrishin.smartreader.models.repositories.models.Library
+import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LibrariesRepositoryImpl : LibrariesRepository {
 
     private val dao: LibrariesDao
 
+    @Inject
     constructor(dao: LibrariesDao) {
         this.dao = dao
     }
 
     override fun getUserLibraries(email: String, start: Int, count: Int): List<Library> {
-        return dao.getUserLibraries(email, start, count).map { Library(it.libraryName, emptyList()) }
+        return dao.getUserLibraries(email, start, count).map {
+            Library(it.libraryName, it.countBooks, it.pathToCover, emptyList())
+        }
     }
 
-    override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): List<Book> {
-        return dao.getBooksFromUserLibrary(email, library, start, count).books.map {
-            Book(it.book.title, Genre(it.book.genre.genre), it.book.author, it.book.rate, it.book.countPages,
-                    it.book.pathToCover, it.book.pathToFile)
+    override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): Library {
+        return dao.getBooksFromUserLibrary(email, library, start, count).let {
+            Library(it.libraryName,
+                    it.countBooks,
+                    it.pathToCover,
+                    it.books.map(::mapDatabaseBookToRepositoryModel)
+            )
         }
     }
 
     override fun createNewUserLibrary(email: String, library: String): Library {
-        return Library(dao.createNewUserLibrary(email, library).libraryName, emptyList())
+        return Library(dao.createNewUserLibrary(email, library).libraryName, 0, "", emptyList())
     }
 
     override fun addNewBookToUserLibrary(title: String, email: String, library: String): Boolean {
@@ -46,5 +56,15 @@ class LibrariesRepositoryImpl : LibrariesRepository {
     override fun deleteUserLibrary(email: String, library: String): Boolean {
         return dao.deleteUserLibrary(email, library)
     }
+
+    private fun mapDatabaseBookToRepositoryModel(bookEntity: DatabaseBookInLibrary) = Book(
+            bookEntity.book.title,
+            Genre(bookEntity.book.genre.genre),
+            bookEntity.book.author,
+            bookEntity.book.rate,
+            bookEntity.book.countPages,
+            bookEntity.book.pathToCover,
+            bookEntity.book.pathToFile
+    )
 
 }

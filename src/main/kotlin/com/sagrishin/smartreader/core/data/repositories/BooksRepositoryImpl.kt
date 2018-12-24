@@ -7,11 +7,15 @@ import com.sagrishin.smartreader.models.repositories.models.VoiceOvers
 import com.sagrishin.smartreader.models.repositories.models.Genre
 import com.sagrishin.smartreader.models.repositories.BooksRepository
 import java.util.stream.Collectors
+import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class BooksRepositoryImpl : BooksRepository {
 
     private val dao: BooksDao
 
+    @Inject
     constructor(booksDao: BooksDao) {
         dao = booksDao
     }

@@ -27,7 +27,7 @@ object SmartReaderApplication {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val usersDao = appComponent.getUsersDao()
+        val usersRepository = appComponent.getUsersRepository()
         val api = appComponent.getApi()
 
         embeddedServer(Netty, 8080) {
@@ -40,7 +40,7 @@ object SmartReaderApplication {
                 jwt("jwt") {
                     verifier(JwtConfig.verifier)
                     realm = "ktor.io"
-                    validate { it.payload.getClaim("id").asInt()?.let(usersDao::getUserById) }
+                    validate { it.payload.getClaim("id").asInt()?.let(usersRepository::getUserInfoForTokenAuth) }
                 }
             }
 
