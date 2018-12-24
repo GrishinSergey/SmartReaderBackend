@@ -15,20 +15,22 @@ class LibrariesControllerImpl : LibrariesController {
     }
 
     override fun getUserLibraries(email: String, start: Int, count: Int): LibraryResponse<List<ResponseLibrary>> {
-        if ((start > 0) && (count > 0)) {
+        if ((start >= 0) && (count > 0)) {
             val userLibraries = librariesModel.getUserLibraries(email, start, count)
-            val libraries = userLibraries.map { ResponseLibrary(it.libraryName, BooksResponse(it.books, 0)) }
+            val libraries = userLibraries.map {
+                ResponseLibrary(it.libraryName, it.countBooks, it.pathToCover, it.books)
+            }
             return LibraryResponse(libraries, Controller.SUCCESS_STATUS_CODE)
         }
         return LibraryResponse(emptyList(), Controller.BAD_REQUEST_CODE)
     }
 
     override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): ResponseLibrary {
-        if ((start > 0) && (count > 0)) {
-            val book = librariesModel.getBooksFromUserLibrary(email, library, start, count)
-            return ResponseLibrary(library, BooksResponse(book, Controller.SUCCESS_STATUS_CODE))
+        if ((start >= 0) && (count > 0)) {
+            val found = librariesModel.getBooksFromUserLibrary(email, library, start, count)
+            return ResponseLibrary(found.libraryName, found.countBooks, found.pathToCover, found.books)
         }
-        return ResponseLibrary("", BooksResponse(emptyList(), Controller.BAD_REQUEST_CODE))
+        return ResponseLibrary(library, -1, "", emptyList())
     }
 
     override fun createNewUserLibrary(email: String, library: String): LibraryActionResponse<Boolean> {

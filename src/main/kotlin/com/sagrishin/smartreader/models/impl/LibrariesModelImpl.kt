@@ -23,7 +23,7 @@ class LibrariesModelImpl : LibrariesModel {
     }
 
     @Throws(LibraryModelException::class)
-    override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): List<Book> {
+    override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): Library {
         return librariesRepository.getBooksFromUserLibrary(email, library, start, count)
     }
 

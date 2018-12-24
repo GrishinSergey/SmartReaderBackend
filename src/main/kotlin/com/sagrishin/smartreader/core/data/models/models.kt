@@ -1,7 +1,5 @@
 package com.sagrishin.smartreader.core.data.models
 
-import io.ktor.auth.Principal
-
 data class DatabaseGenre(
         val genreId: Int = -1,
         val genre: String = "",
@@ -43,5 +41,7 @@ data class DatabaseUser(
 data class DatabaseLibrary(
         val libraryId: Int = -1,
         val libraryName: String = "",
+        val countBooks: Int = 0,
+        val pathToCover: String = "",
         val books: List<DatabaseBookInLibrary> = emptyList()
 )

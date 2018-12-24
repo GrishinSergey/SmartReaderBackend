@@ -2,16 +2,17 @@ package com.sagrishin.smartreader.api
 
 import com.google.gson.Gson
 import com.sagrishin.smartreader.api.jwt.JwtConfig
+import com.sagrishin.smartreader.api.jwt.JwtUserPrincipal
+import com.sagrishin.smartreader.api.responses.AuthResponse
+import com.sagrishin.smartreader.api.responses.LibraryResponse
 import com.sagrishin.smartreader.controllers.BooksController
 import com.sagrishin.smartreader.controllers.GenresController
 import com.sagrishin.smartreader.controllers.LibrariesController
 import com.sagrishin.smartreader.controllers.UsersController
-import com.sagrishin.smartreader.core.data.models.DatabaseUser
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.*
 import java.net.URLDecoder
@@ -25,12 +26,6 @@ class Api(
 ) {
 
     fun api(): Routing.() -> Unit = {
-        get ("/users.getUserInfoByEmail/{email}") {
-            val email = call.parameters["email"]!!
-            val foundUser = usersController.getUserInfoByEmail(email)
-            call.respondText(gson.toJson(foundUser), ContentType.Application.Json)
-        }
-
         post ("/users.createNewUser/{name}/{email}") {
             val name = call.parameters["name"]!!
             val email = call.parameters["email"]!!
@@ -100,7 +95,8 @@ class Api(
                 val start = call.parameters["start"]!!.toInt()
                 val count = call.parameters["count"]!!.toInt()
                 val books = librariesController.getBooksFromUserLibrary(email, library, start, count)
-                call.respondText(gson.toJson(books), ContentType.Application.Json)
+                val libraryResponse = LibraryResponse(books, HttpStatusCode.OK.value)
+                call.respondText(gson.toJson(libraryResponse), ContentType.Application.Json)
             }
 
             post ("/libraries.createNewUserLibrary/{email}/{library}") {

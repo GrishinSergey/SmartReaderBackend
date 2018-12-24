@@ -30,7 +30,11 @@ class LibrariesDaoImpl : LibrariesDao {
                 UserLibrary.user eq usersDao.getUserInfoByEmail(email).userId
             }.limit(count, start).toList().map {
                 val library = LibraryEntity.find { Libraries.libraryId eq it.library }.single()
-                DatabaseLibrary(library.id.value, library.libraryName, emptyList())
+                val countBooks = countBooksInLibrary(library)
+                val pathToCover = BookEntity.find {
+                    Books.bookId eq BookLibraryEntity.find { BookLibrary.library eq library.id.value }.first().book
+                }.first().pathToCover
+                DatabaseLibrary(library.id.value, library.libraryName, countBooks, pathToCover, emptyList())
             }
         }
     }
@@ -42,7 +46,9 @@ class LibrariesDaoImpl : LibrariesDao {
                 val lib = LibraryEntity.find { Libraries.libraryName eq library }.single()
                 findUserLibraryEntityRelation(user, lib)
                 val books = findBooksByLibrary(lib, count, start)
-                return@transaction DatabaseLibrary(lib.id.value, lib.libraryName, books)
+                val pathToCover = books[0].book.pathToCover
+                val countBooks = countBooksInLibrary(lib)
+                return@transaction DatabaseLibrary(lib.id.value, lib.libraryName, countBooks, pathToCover, books)
             } catch (e: IllegalArgumentException) {
                 throw DuplicatedDataInDatabaseException(e.message!!)
             } catch (e: NoSuchElementException) {
@@ -122,6 +128,10 @@ class LibrariesDaoImpl : LibrariesDao {
                 false
             }
         }
+    }
+
+    private fun countBooksInLibrary(library: LibraryEntity): Int {
+        return transaction(db) { BookLibraryEntity.find { BookLibrary.library eq library.id.value }.count() }
     }
 
     private fun findUserLibraryEntityRelation(user: DatabaseUser, lib: LibraryEntity): UserLibraryEntity {

@@ -9,7 +9,9 @@ data class LibraryResponse<T>(
 
 data class ResponseLibrary(
         val libraryName: String,
-        val books: BooksResponse<List<Book>>
+        val countBooks: Int,
+        val pathToCover: String,
+        val books: List<Book>
 )
 
 data class LibraryActionResponse<T>(
