@@ -4,7 +4,6 @@ import com.sagrishin.smartreader.api.jwt.JwtConfig
 import com.sagrishin.smartreader.di.components.AppComponent
 import com.sagrishin.smartreader.di.components.DaggerAppComponent
 import com.sagrishin.smartreader.di.modules.*
-import com.sagrishin.smartreader.main.configs.installCors
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.jwt
@@ -15,23 +14,22 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
-private val appComponent: AppComponent = DaggerAppComponent.builder()
-        .controllersModule(ControllersModule())
-        .gsonModule(GsonModule())
-        .daoModule(DaoModule())
-        .threadsModule(ThreadsModule())
-        .apiModule(ApiModule())
-        .build()
-
 fun main(args: Array<String>) {
+    val appComponent: AppComponent = DaggerAppComponent.builder()
+            .controllersModule(ControllersModule())
+            .gsonModule(GsonModule())
+            .daoModule(DaoModule())
+            .threadsModule(ThreadsModule())
+            .apiModule(ApiModule())
+            .build()
     val usersRepository = appComponent.getUsersRepository()
     val api = appComponent.getApi()
+    val port = System.getenv("PORT")?.toInt() ?: 8080
 
-    embeddedServer(Netty, 8080) {
+    embeddedServer(Netty, port) {
         install(DefaultHeaders)
         install(ConditionalHeaders)
         install(CallLogging)
-        installCors()
 
         install(Authentication) {
             jwt("jwt") {
