@@ -63,6 +63,7 @@ dependencies {
 
     implementation "ch.qos.logback:logback-classic:1.2.1"
 
+    implementation "org.postgresql:postgresql:42.2.2"
     implementation "mysql:mysql-connector-java:5.1.13"
     implementation "org.jetbrains.exposed:exposed:0.10.4"
 

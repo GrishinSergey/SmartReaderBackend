@@ -10,6 +10,7 @@ import javax.inject.Singleton
     GsonModule::class,
     ThreadsModule::class,
     DaoModule::class,
+    RepositoriesModue::class,
     ControllersModule::class,
     ApiModule::class
 ])
@@ -18,6 +19,6 @@ interface AppComponent {
 
     fun getApi(): Api
 
-    fun getUsersDao(): UsersDao
+    fun getUsersRepository(): UsersRepository
 
 }

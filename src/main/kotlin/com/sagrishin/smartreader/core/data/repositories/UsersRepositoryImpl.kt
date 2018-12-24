@@ -1,13 +1,18 @@
 package com.sagrishin.smartreader.core.data.repositories
 
+import com.sagrishin.smartreader.api.jwt.JwtUserPrincipal
 import com.sagrishin.smartreader.core.data.database.dao.UsersDao
 import com.sagrishin.smartreader.models.repositories.UsersRepository
 import com.sagrishin.smartreader.models.repositories.models.User
+import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UsersRepositoryImpl : UsersRepository {
 
     private val dao: UsersDao
 
+    @Inject
     constructor(usersDao: UsersDao) {
         dao = usersDao
     }
