@@ -39,6 +39,24 @@ class LibrariesDaoImpl : LibrariesDao {
         }
     }
 
+    override fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean {
+        return transaction (db) {
+            val user = usersDao.getUserInfoByEmail(email)
+            try {
+                val lib = LibraryEntity.find { Libraries.libraryName eq library }.single()
+                findUserLibraryEntityRelation(user, lib)
+                val book = BookEntity.find { Books.title eq title }.single()
+                BookLibraryEntity.find {
+                    (BookLibrary.library eq lib.id.value) and (BookLibrary.book eq book.id.value )
+                }.count() > 0
+            } catch (e: IllegalArgumentException) {
+                false
+            } catch (e: NoSuchElementException) {
+                false
+            }
+        }
+    }
+
     override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): DatabaseLibrary {
         return transaction(db) {
             val user = usersDao.getUserInfoByEmail(email)
@@ -46,7 +64,7 @@ class LibrariesDaoImpl : LibrariesDao {
                 val lib = LibraryEntity.find { Libraries.libraryName eq library }.single()
                 findUserLibraryEntityRelation(user, lib)
                 val books = findBooksByLibrary(lib, count, start)
-                val pathToCover = books[0].book.pathToCover
+                val pathToCover = if (books.isNotEmpty()) books[0].book.pathToCover else ""
                 val countBooks = countBooksInLibrary(lib)
                 return@transaction DatabaseLibrary(lib.id.value, lib.libraryName, countBooks, pathToCover, books)
             } catch (e: IllegalArgumentException) {

@@ -21,4 +21,6 @@ interface LibrariesController {
 
     fun deleteUserLibrary(email: String, library: String): LibraryActionResponse<Boolean>
 
+    fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean
+
 }

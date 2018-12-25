@@ -24,4 +24,6 @@ interface LibrariesModel {
 
     fun deleteUserLibrary(email: String, library: String): Boolean
 
+    fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean
+
 }
