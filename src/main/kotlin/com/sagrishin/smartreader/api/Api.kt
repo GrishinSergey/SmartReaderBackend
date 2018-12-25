@@ -99,6 +99,14 @@ class Api(
                 call.respondText(gson.toJson(libraryResponse), ContentType.Application.Json)
             }
 
+            get ("/libraries.isBookRelatesToUserLibrary/{email}/{library}/{title}") {
+                val title = call.parameters["title"]!!
+                val email = call.parameters["email"]!!
+                val library = call.parameters["library"]!!
+                val result = librariesController.isBookRelatesToUserLibrary(email, library, title)
+                call.respondText(gson.toJson(result), ContentType.Application.Json)
+            }
+
             post ("/libraries.createNewUserLibrary/{email}/{library}") {
                 val email = call.parameters["email"]!!
                 val library = call.parameters["library"]!!

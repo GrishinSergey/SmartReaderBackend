@@ -26,6 +26,10 @@ class LibrariesRepositoryImpl : LibrariesRepository {
         }
     }
 
+    override fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean {
+        return dao.isBookRelatesToUserLibrary(email, library, title)
+    }
+
     override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): Library {
         return dao.getBooksFromUserLibrary(email, library, start, count).let {
             Library(it.libraryName,
