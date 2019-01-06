@@ -22,8 +22,16 @@ class LibrariesModelImpl : LibrariesModel {
         return librariesRepository.getUserLibraries(email, start, count)
     }
 
+    override fun getUserLibraries(email: String): List<Library> {
+        return librariesRepository.getAllUserLibraries(email)
+    }
+
     override fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean {
         return librariesRepository.isBookRelatesToUserLibrary(email, library, title)
+    }
+
+    override fun isBookFavoritesByUser(email: String, title: String): Boolean {
+        return librariesRepository.isBookFavoritesByUser(email, title)
     }
 
     @Throws(LibraryModelException::class)

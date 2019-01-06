@@ -89,6 +89,12 @@ class Api(
                 call.respondText(gson.toJson(userLibraries), ContentType.Application.Json)
             }
 
+            get ("/libraries.getAllUserLibraries/{email}") {
+                val email = call.parameters["email"]!!
+                val userLibraries = librariesController.getAllUserLibraries(email)
+                call.respondText(gson.toJson(userLibraries), ContentType.Application.Json)
+            }
+
             get ("/libraries.getBooksFromUserLibrary/{email}/{library}/{start}/{count}") {
                 val email = call.parameters["email"]!!
                 val library = call.parameters["library"]!!
@@ -104,6 +110,13 @@ class Api(
                 val email = call.parameters["email"]!!
                 val library = call.parameters["library"]!!
                 val result = librariesController.isBookRelatesToUserLibrary(email, library, title)
+                call.respondText(gson.toJson(result), ContentType.Application.Json)
+            }
+
+            get ("/libraries.isBookFavoritesByUser/{email}/{title}") {
+                val title = call.parameters["title"]!!
+                val email = call.parameters["email"]!!
+                val result = librariesController.isBookFavoritesByUser(email, title)
                 call.respondText(gson.toJson(result), ContentType.Application.Json)
             }
 
