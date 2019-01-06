@@ -8,6 +8,8 @@ interface LibrariesController {
 
     fun getUserLibraries(email: String, start: Int, count: Int): LibraryResponse<List<ResponseLibrary>>
 
+    fun getAllUserLibraries(email: String): LibraryResponse<List<ResponseLibrary>>
+
     fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): ResponseLibrary
 
     fun createNewUserLibrary(email: String, library: String): LibraryActionResponse<Boolean>
@@ -20,5 +22,9 @@ interface LibrariesController {
     fun deleteBookFromLibrary(title: String, email: String, library: String): LibraryActionResponse<Boolean>
 
     fun deleteUserLibrary(email: String, library: String): LibraryActionResponse<Boolean>
+
+    fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean
+
+    fun isBookFavoritesByUser(email: String, title: String): Boolean
 
 }

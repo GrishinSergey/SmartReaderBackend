@@ -26,6 +26,20 @@ class LibrariesRepositoryImpl : LibrariesRepository {
         }
     }
 
+    override fun getAllUserLibraries(email: String): List<Library> {
+        return dao.getAllUserLibraries(email).map {
+            Library(it.libraryName, it.countBooks, it.pathToCover, emptyList())
+        }
+    }
+
+    override fun isBookFavoritesByUser(email: String, title: String): Boolean {
+        return dao.isBookFavoritesByUser(email, title)
+    }
+
+    override fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean {
+        return dao.isBookRelatesToUserLibrary(email, library, title)
+    }
+
     override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): Library {
         return dao.getBooksFromUserLibrary(email, library, start, count).let {
             Library(it.libraryName,

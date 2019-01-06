@@ -25,6 +25,22 @@ class LibrariesControllerImpl : LibrariesController {
         return LibraryResponse(emptyList(), Controller.BAD_REQUEST_CODE)
     }
 
+    override fun getAllUserLibraries(email: String): LibraryResponse<List<ResponseLibrary>> {
+        val userLibraries = librariesModel.getUserLibraries(email)
+        val libraries = userLibraries.map {
+            ResponseLibrary(it.libraryName, it.countBooks, it.pathToCover, it.books)
+        }
+        return LibraryResponse(libraries, Controller.SUCCESS_STATUS_CODE)
+    }
+
+    override fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean {
+        return librariesModel.isBookRelatesToUserLibrary(email, library, title)
+    }
+
+    override fun isBookFavoritesByUser(email: String, title: String): Boolean {
+        return librariesModel.isBookFavoritesByUser(email, title)
+    }
+
     override fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): ResponseLibrary {
         if ((start >= 0) && (count > 0)) {
             val found = librariesModel.getBooksFromUserLibrary(email, library, start, count)

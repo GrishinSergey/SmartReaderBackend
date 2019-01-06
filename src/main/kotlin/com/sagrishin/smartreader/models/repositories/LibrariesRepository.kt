@@ -6,6 +6,8 @@ interface LibrariesRepository {
 
     fun getUserLibraries(email: String, start: Int, count: Int): List<Library>
 
+    fun getAllUserLibraries(email: String): List<Library>
+
     fun getBooksFromUserLibrary(email: String, library: String, start: Int, count: Int): Library
 
     fun createNewUserLibrary(email: String, library: String): Library
@@ -17,5 +19,9 @@ interface LibrariesRepository {
     fun deleteBookFromLibrary(title: String, email: String, library: String): Boolean
 
     fun deleteUserLibrary(email: String, library: String): Boolean
+
+    fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean
+
+    fun isBookFavoritesByUser(email: String, title: String): Boolean
 
 }

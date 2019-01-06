@@ -31,10 +31,69 @@ class LibrariesDaoImpl : LibrariesDao {
             }.limit(count, start).toList().map {
                 val library = LibraryEntity.find { Libraries.libraryId eq it.library }.single()
                 val countBooks = countBooksInLibrary(library)
-                val pathToCover = BookEntity.find {
-                    Books.bookId eq BookLibraryEntity.find { BookLibrary.library eq library.id.value }.first().book
-                }.first().pathToCover
+                val bookInLibrary = BookLibraryEntity.find { BookLibrary.library eq library.id.value }
+                        .firstOrNull()?.book
+                val pathToCover = bookInLibrary?.let {
+                    BookEntity.find { Books.bookId eq it }.first().pathToCover
+                } ?: ""
                 DatabaseLibrary(library.id.value, library.libraryName, countBooks, pathToCover, emptyList())
+            }
+        }
+    }
+
+    override fun getAllUserLibraries(email: String): List<DatabaseLibrary> {
+        return transaction(db) {
+            UserLibraryEntity.find {
+                UserLibrary.user eq usersDao.getUserInfoByEmail(email).userId
+            }.toList().map {
+                val library = LibraryEntity.find { Libraries.libraryId eq it.library }.single()
+                val countBooks = countBooksInLibrary(library)
+                val bookInLibrary = BookLibraryEntity.find { BookLibrary.library eq library.id.value }
+                        .firstOrNull()?.book
+                val pathToCover = bookInLibrary?.let {
+                    BookEntity.find { Books.bookId eq it }.first().pathToCover
+                } ?: ""
+                DatabaseLibrary(library.id.value, library.libraryName, countBooks, pathToCover, emptyList())
+            }
+        }
+
+    }
+
+    override fun isBookFavoritesByUser(email: String, title: String): Boolean {
+        return transaction {
+            try {
+                usersDao.getUserInfoByEmail(email).let {
+                    UserLibraryEntity.find { UserLibrary.user eq it.userId }
+                }.let {
+                    val book = BookEntity.find { Books.title eq title }.single()
+                    it.map {
+                        BookLibraryEntity.find {
+                            (BookLibrary.library eq it.library) and (BookLibrary.book eq book.id.value)
+                        }.count() > 0
+                    }.reduce { acc, isRelated -> acc || isRelated }
+                }
+            } catch (e: IllegalArgumentException) {
+                false
+            } catch (e: NoSuchElementException) {
+                false
+            }
+        }
+    }
+
+    override fun isBookRelatesToUserLibrary(email: String, library: String, title: String): Boolean {
+        return transaction (db) {
+            val user = usersDao.getUserInfoByEmail(email)
+            try {
+                val lib = LibraryEntity.find { Libraries.libraryName eq library }.single()
+                findUserLibraryEntityRelation(user, lib)
+                val book = BookEntity.find { Books.title eq title }.single()
+                BookLibraryEntity.find {
+                    (BookLibrary.library eq lib.id.value) and (BookLibrary.book eq book.id.value )
+                }.count() > 0
+            } catch (e: IllegalArgumentException) {
+                false
+            } catch (e: NoSuchElementException) {
+                false
             }
         }
     }
@@ -46,7 +105,7 @@ class LibrariesDaoImpl : LibrariesDao {
                 val lib = LibraryEntity.find { Libraries.libraryName eq library }.single()
                 findUserLibraryEntityRelation(user, lib)
                 val books = findBooksByLibrary(lib, count, start)
-                val pathToCover = books[0].book.pathToCover
+                val pathToCover = if (books.isNotEmpty()) books[0].book.pathToCover else ""
                 val countBooks = countBooksInLibrary(lib)
                 return@transaction DatabaseLibrary(lib.id.value, lib.libraryName, countBooks, pathToCover, books)
             } catch (e: IllegalArgumentException) {
